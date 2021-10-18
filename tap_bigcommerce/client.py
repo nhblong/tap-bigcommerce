@@ -113,17 +113,12 @@ class BigCommerce(Client):
     @parse_date_string_arguments('bookmark')
     @validate
     def customers(self, replication_key, bookmark):
-        """
-        Customers endpoint can't sort by date_modified, so resource
-        is queried by day to ensure consistent replication key
-        """
 
-        for start, end in self.iterdates(bookmark):
-            for customer in self.api.resource('customers', {
-                    'min_date_modified': start.isoformat(),
-                    'max_date_modified': end.isoformat()
-            }):
-                yield customer
+        for customer in self.api.resource('customers', {
+                'date_modified:min': bookmark.isoformat(),
+                'sort': 'date_modified:asc'
+        }):
+            yield customer
 
     def coupons(self):
 

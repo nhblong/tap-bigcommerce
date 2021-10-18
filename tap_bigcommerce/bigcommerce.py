@@ -202,7 +202,7 @@ class Bigcommerce():
             ]
         },
         'customers': {
-            'version': 2,
+            'version': 3,
             'path': 'customers',
             'transform_date_fields': [
                 'date_modified',
@@ -210,7 +210,10 @@ class Bigcommerce():
             ],
             'sub_resources': 0,
             'exclude_paths': [
-                ('addresses',)
+                ('accepts_product_review_abandoned_cart_emails',),
+                ('addresses',),
+                ('authentication',),
+                ('channel_ids',)
             ]
         },
         'products': {
