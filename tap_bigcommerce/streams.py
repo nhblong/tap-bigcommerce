@@ -128,11 +128,15 @@ class Stream():
     def sync(self, state):
         get_data = getattr(self.client, self.name)
 
+        current_page = singer.get_offset(state, self.name, {'current_page': None}).get('current_page', None)
+        logger.info("XXX-CURRENT-PAGE: {}".format(current_page))
+
         if self.replication_method == "INCREMENTAL":
             self.bookmark_start = self.get_bookmark(state)
             res = get_data(
                 replication_key=self.replication_key,
-                bookmark=self.bookmark_start
+                bookmark=self.bookmark_start,
+                current_page=current_page
             )
             for i, item in enumerate(res):
                 try:
@@ -153,7 +157,7 @@ class Stream():
                     pass
 
         elif self.replication_method == "FULL_TABLE":
-            res = get_data()
+            res = get_data(current_page=current_page)
 
             for item in res:
                 yield (self.stream, item)

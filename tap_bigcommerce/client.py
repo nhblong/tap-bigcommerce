@@ -91,36 +91,51 @@ class BigCommerce(Client):
 
     @parse_date_string_arguments('bookmark')
     @validate
-    def orders(self, replication_key, bookmark):
+    def orders(self, replication_key, bookmark, current_page):
 
-        for order in self.api.resource('orders', {
+        for order in self.api.resource(
+            name='orders',
+            params= {
                 'min_date_modified': bookmark.isoformat(),
                 'sort': 'date_modified:asc'
-        }):
+            },
+            current_page=current_page
+        ):
             yield order
 
     @parse_date_string_arguments('bookmark')
     @validate
-    def products(self, replication_key, bookmark):
+    def products(self, replication_key, bookmark, current_page):
 
-        for product in self.api.resource('products', {
+        for product in self.api.resource(
+            name='products',
+            params={
                 'date_modified:min': bookmark.isoformat(),
                 'sort': 'date_modified',
                 'direction': 'asc'
-        }):
+            },
+            current_page=current_page
+        ):
             yield product
 
     @parse_date_string_arguments('bookmark')
     @validate
-    def customers(self, replication_key, bookmark):
+    def customers(self, replication_key, bookmark, current_page):
 
-        for customer in self.api.resource('customers', {
+        for customer in self.api.resource(
+            name='customers',
+            params={
                 'date_modified:min': bookmark.isoformat(),
                 'sort': 'date_modified:asc'
-        }):
+            },
+            current_page=current_page
+        ):
             yield customer
 
-    def coupons(self):
+    def coupons(self, current_page):
 
-        for coupon in self.api.resource('coupons'):
+        for coupon in self.api.resource(
+            name='coupons',
+            current_page=current_page
+        ):
             yield coupon

@@ -337,7 +337,7 @@ class Bigcommerce():
         else:
             return future
 
-    def resource(self, name, params={}, async_sub_resources=True):
+    def resource(self, name, params={}, async_sub_resources=True, current_page=None):
         resource = self.endpoints.get(name, {})
         version = resource.get('version', 3)
         path = resource.get('path', name)
@@ -366,6 +366,9 @@ class Bigcommerce():
         requests_need = self.results_per_page * sub_resources
 
         page = 0
+        if current_page:
+            page = current_page
+
         while True:
             error_count = 0
             page += 1
@@ -433,4 +436,8 @@ class Bigcommerce():
             # assume results page with fewer values than `results_per_page` =
             # no more results
             if len(data) < self.results_per_page:
+                break
+
+            # If only the current_page is needed
+            if current_page is not None:
                 break
